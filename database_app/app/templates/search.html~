@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>{{title}}</h3>
+
+<form action="" method="post" name="search_val">
+{{form.hidden_tag()}}
+<p>Type:
+	{{form.search_type()}}</p>
+
+<p> Search:
+	{{form.search_val(size=30)}}
+<p>Date:
+	{{form.date()}}</p>
+<p>Rating:
+	{{form.rating()}}</p>
+
+
+
+<input type="submit" value="Search!">
+</form>
+
+{% if db_returnvals %} <br/>
+{{db_returnvals[0]}}
+{% endif %}
+
+</p>
+
+{% endblock %} 

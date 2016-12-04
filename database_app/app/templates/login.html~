@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>{{title}}</h3>
+
+<form action="" method="post" name="login">
+{{form.hidden_tag()}}
+<p>Username:
+	{{form.username(size=30)}}</p>
+
+<p> Password:
+	{{form.userpassword(size=30)}}</p>
+
+<input type="submit" value="Log In!">
+</form>
+
+
+<!--{% if user_info %} <br/>
+{{user_info[0][3]}}
+
+<form action="" method="post" name="changefavplace">
+{{form.hidden_tag()}}
+<p> Change favorite place:
+	{{form.favorite(size=30)}}</p>
+<input type="submit" value="change!">
+</form>
+{% endif %}-->
+
+
+</p>
+
+{% endblock %} 

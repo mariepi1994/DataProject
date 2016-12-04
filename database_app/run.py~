@@ -1,0 +1,8 @@
+#!database_env/bin/python
+from app import d_app
+from app import mysql
+cur = mysql.connection.cursor()
+d_app.run(debug=True)
+
+
+

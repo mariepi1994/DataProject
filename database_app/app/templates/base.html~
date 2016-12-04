@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<title>Yucked</title>
+	</head>
+	<body>
+		<h1>Yucked</h1>
+		<h2>"Yuck it"</h2>
+		<div id="hmenu">
+			<ul>
+				<li><a href="{{url_for('index')}}">Home</a></li>
+				<li><a href="{{url_for('search')}}">Search</a></li>
+				<li><a href="{{url_for('login')}}">Log In</a></li>
+			</ul>
+		</div>
+		{% block content %} {% endblock %}
+	</body>
+</html>

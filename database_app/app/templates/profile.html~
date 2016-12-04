@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>{{title}}</h3>
+
+<h4>Hello, {{temp[1]}}!</h4>
+
+<p>{{answer}}</p>
+
+<p>Your ratings: need to do....</p>
+
+<form action="" method="post" name="profile">
+{{form.hidden_tag()}}
+<p>Change Favorite place:
+	{{form.favorite(size=30)}}</p>
+
+<input type="submit" value="change!">
+</form>
+
+<form action="" method="post" name="profile">
+{{form.hidden_tag()}}
+<p>Change Favorite place:
+	{{form.button(size=30)}}</p>
+
+<input type="submit" value="Delete Profile!">
+</form>
+
+
+</p>
+
+{% endblock %} 
