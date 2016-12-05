@@ -2,16 +2,55 @@ from app import d_app
 from app import mysql
 
 def get_dbdata(search, rating, utype, date):
-	if utype == "Establishment":
-		cur = mysql.connection.cursor()
-		cur.execute('''SELECT * FROM example''')
-		returnvals = cur.fetchall() #use fetchall because this will return more than one roll
+    if utype == "Establishment":
+        if search == "ALL":
+            cur = mysql.connection.cursor()
+            #Query for a ALL establishments
+            cur.execute('''SELECT Name, Address, FLOOR(AVG(Score)) FROM EstablishmentRating, Establishments WHERE EstablishmentRating.EstablishmentID = Establishments.EstablishmentID GROUP BY EstablishmentRating.EstablishmentID''')
+            returnvals = cur.fetchall() #use fetchall because this will return more than one row
+            
+            print ("PRINTING RETURNVALS::::::::")
+            print (returnvals)
+        
+        else:
+            cur = mysql.connection.cursor()
+            #Query for a specific Establishment
+            cur.execute('''SELECT Name, Address, FLOOR(AVG(Score)) FROM EstablishmentRating, Establishments WHERE EstablishmentRating.EstablishmentID = Establishments.EstablishmentID AND Establishments.Name = %s GROUP BY EstablishmentRating.EstablishmentID ''' , (str(search),))
+            returnvals = cur.fetchall() #use fetchall because this will return more than one row
+            
+            print ("PRINTING RETURNVALS::::::::")
+            print (returnvals)
 
-		'''printthis = ""
-		for i in returnvals:
-			printthis += str(i) + "<br>"'''
+    else:
+        if search == "ALL":
+            if date == "":
+                cur = mysql.connection.cursor()
+                #Query for ALL events without specific dates
+                cur.execute('''SELECT Date, Name, Description, COUNT(UserID) FROM Events, EventRating, Establishments WHERE Events.EstablishmentID = Establishments.EstablishmentID AND Events.EventID = EventRating.EventID GROUP BY EventRating.EventID''')
+                returnvals = cur.fetchall() #use fetchall because this will return more than one row
+                
+                print ("PRINTING RETURNVALS::::::::")
+                print (returnvals)
+            
+            else:
+                cur = mysql.connection.cursor()
+                #Query for ALL events with specific dates
+                cur.execute('''SELECT Date, Name, Description, COUNT(UserID) FROM Events, EventRating, Establishments WHERE Events.EstablishmentID = Establishments.EstablishmentID AND Events.EventID = EventRating.EventID AND Date = %s GROUP BY EventRating.EventID''' , (str(date),))
+                returnvals = cur.fetchall() #use fetchall because this will return more than one row
+                
+                print ("PRINTING RETURNVALS::::::::")
+                print (returnvals)
 
-		return returnvals
+    #Format returnvals
+    places = []
+    for place in returnvals:
+        n = str(place[0])
+        a = str(place[1])
+        r = str(place[2])
+        tup = tuple((n,a,r))
+        places.append(tup)
+
+    return places
 
 
 #validate that this is a user
