@@ -27,7 +27,11 @@
 
 {% if all_places %}
 {% for place in all_places %}
-<p>{{place}}</p>
+<p></li>
+{% for x in place %}
+{{x}}
+{% endfor %}
+</li></p>
 {% endfor %}
 {% endif %}
 

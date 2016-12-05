@@ -1,4 +1,4 @@
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from wtforms import StringField
 from wtforms import SelectField
 from wtforms import RadioField
@@ -21,9 +21,9 @@ class DBSearch(Form):
     search_type = SelectField('search_type', choices = [('Event', 'Event'), ('Establishment', 'Establishment')], validators = [DataRequired()])
 
 class userLogin(Form):
-    username = StringField('username', validators=[DataRequired()])    
+    username = StringField('username', validators=[DataRequired()])
     userpassword = StringField('usepassword', validators=[DataRequired()])
-    
+
 class profileChanges(Form):
 	favorite = StringField('favorite', validators=[optional()])
 
@@ -33,7 +33,7 @@ class del_profile(Form):
 class register(Form):
 	reg_username = StringField('reg_username', validators=[DataRequired()])
 	reg_password = StringField('reg_password', validators=[DataRequired()])
-	reg_favoriteplace =  StringField('reg_favoriteplace', validators=[optional()]) 
+	reg_favoriteplace =  StringField('reg_favoriteplace', validators=[optional()])
 
 class Establishments(Form):
 	deloradd = SelectField('deloradd', choices=[('Delete', 'Delete'), ('Add', 'Add')], validators = [DataRequired()])
@@ -43,11 +43,6 @@ class Establishments(Form):
 	est_category = SelectField('est_category', choices = food, validators = [DataRequired()])
 
 
-class ratePlace(Form):	
+class ratePlace(Form):
 	est_name = StringField('est_name', validators=[DataRequired()])
 	rating = SelectField('rating', choices=[('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')], validators = [DataRequired()])
-	
-	
-	
-	
-
