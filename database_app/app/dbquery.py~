@@ -23,7 +23,7 @@ def get_user(username, userpassword):
 	
 
 	if len(returnvals)==0:
-		returnvals = 'Incorrect Username or Password'
+		returnvals = None
 	else:
 		returnvals = get_favoriteplace(returnvals[0][0])
 	return returnvals  #return a STRING of their info that includes their favorite place 
@@ -38,16 +38,16 @@ def change_favplace(user_vals, changeto):
 	if changeto not in get_allplaces():
 		return " NOT IN THE DATABASW! TRY AGAIN.\n  Your favorite place is: " + str(place[5])
 	else: #e
-		'''cur = mysql.connection.cursor()
+		cur = mysql.connection.cursor()
 		cur.execute("""SELECT EstablishmentID
 						FROM  Establishments
 						WHERE Name = %s""", (changeto,))
 		Establishment = cur.fetchall()#graps tuple of useID BUT we need actual number
 		temp = convert_tup(Establishment).split('+')
-		EstablishmentID =  temp[0]'''
+		EstablishmentID =  temp[0]
 		#print EstablishmentID
-		EstablishmentID = get_establishmentid(changeto)
-		print "ESTABLISH  " + str(EstablishmentID)
+		'''EstablishmentID = get_establishmentid(changeto)
+		print "ESTABLISH  " + str(EstablishmentID)'''
 		
 
 
@@ -114,18 +114,114 @@ def create_user(username, password,favoriteplace):
 	return "Your Profile has been created! GO to login to see your profile."
 	
 	
-
-'''def get user_establishment(userID):
+#Gets the establishments that the user has rated
+def getuser_establishment(userID):
 	cur = mysql.connection.cursor()
-	cur.execute("""SELECT Establishments.Name, 
+	cur.execute("""SELECT Establishments.Name, EstablishmentRating.Score 
 					FROM Users, Establishments, EstablishmentRating
-					WHERE Establishments.EstablishmentID = Users.EstablishmentID AND
-						  
-					Users.UserID = %s """, (userID,))
+					WHERE Establishments.EstablishmentID = EstablishmentRating.EstablishmentID AND
+						  EstablishmentRating.UserID = Users.UserID AND
+						  Users.UserID = %s """, (userID,))
 	
 	tup = cur.fetchall()
-	returnvals = convert_tup(tup)	
-	return returnvals #returns string with user info AND of favorite place'''
+	places = []
+	for place in tup:
+		n = str(place[0])
+		a = str(place[1])
+		tup = tuple((n,a))
+		places.append(tup)
+
+	return places #returns string with user info AND of favorite place'''
+
+
+def create_establishment(choice, name, address, category):
+	if(choice == 'Add'):
+		cur = mysql.connection.cursor()
+		cur.execute('''SELECT MAX(EstablishmentID) FROM Establishments''')
+		maxid = cur.fetchone() #this will give us a tuples
+		cur.execute('''INSERT INTO Establishments(EstablishmentID, Name, Address, Type) VALUES (%s, %s, %s, %s)''', (maxid[0]+1, name, address,category))
+		mysql.connection.commit()
+		cur.execute('''INSERT INTO EstablishmentRating(UserID, EstablishmentID, Score) VALUES (%s, %s, %s)''', (1, maxid[0]+1, 3))
+		mysql.connection.commit()
+		return "Your Establishment has been created! Add more!"
+	elif(choice == 'Delete'):
+		cur = mysql.connection.cursor()
+		EstablishmentID = get_establishmentid(name)
+		if name not in get_allplaces():
+			return "This establishment does not exist"
+		else:
+			cur.execute('''DELETE FROM Establishments WHERE Name = (%s) ''', (str(name),))
+			mysql.connection.commit()
+			cur.execute('''DELETE FROM EstablishmentRating WHERE EstablishmentID = (%s) ''', (EstablishmentID,))
+			mysql.connection.commit()
+			return "Your Establishment has been Deleted!"
+			
+
+def delete_user(userid):
+	print "user id is: " + str(userid)
+	cur = mysql.connection.cursor()
+	cur.execute('''DELETE FROM Users WHERE UserID = (%s) ''', (userid,))
+	mysql.connection.commit()
+	#return "Your User has been Deleted!"
+	
+
+
+#gets the establishments and their rating BUT only those that have ratings
+def get_est_rating():
+	cur = mysql.connection.cursor()
+	cur.execute('''SELECT Establishments.Name, Establishments.Address, EstablishmentRating.Score
+					FROM Establishments, EstablishmentRating
+					WHERE Establishments.EstablishmentID = EstablishmentRating.EstablishmentID
+					GROUP BY stablishments.Name''')
+	returnvals = cur.fetchall() #use fetchall because this will return more than one roll
+	
+	places = []
+	for place in returnvals:
+		n = str(place[0])
+		a = str(place[1])
+		r =  str(place[2])
+		tup = tuple((n,a,r))
+		places.append(tup)
+
+	return places
+
+#returns a list of tuple = name,address
+def get_establishment():
+	cur = mysql.connection.cursor()
+	cur.execute('''SELECT Name, Address
+					FROM Establishments
+					''')
+	returnvals = cur.fetchall() #use fetchall because this will return more than one roll
+	
+	places = []
+	for place in returnvals:
+		n = str(place[0])
+		a = str(place[1])
+		tup = tuple((n,a))
+		places.append(tup)
+
+	return places
+	
+
+#lets the user rate the palce 
+def user_rating(userid,place, rating):
+	if place not in get_allplaces():
+		return "Not a place!"
+	else:
+		EstablishmentID = get_establishmentid(place)
+		print "ESTABLISH  " + str(EstablishmentID)
+		cur = mysql.connection.cursor()
+		cur.execute('''INSERT INTO EstablishmentRating(UserID, EstablishmentID, Score ) VALUES (%s, %s, %s)''', (userid,EstablishmentID, rating,))
+		mysql.connection.commit()	
+		return "Your rating has been submitted!"
+		
+		
+	
+	
+	
+
+		
+	
 	
 
 

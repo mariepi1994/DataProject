@@ -8,6 +8,9 @@ from app.forms import DBSearch
 from app.forms import userLogin
 from app.forms import profileChanges
 from app.forms import register
+from app.forms import Establishments
+from app.forms import del_profile
+from app.forms import ratePlace
 from app.dbquery import *
 
 
@@ -19,30 +22,47 @@ def index():
 
 @d_app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = userLogin()
-    user_info = None
-    if form.validate_on_submit():
-        user_name = form.username.data
-        user_password = form.userpassword.data
-        user_info =  get_user(user_name, user_password)
-        if request.method == 'POST':
-            return redirect(url_for('profile', user_vals=user_info))
-    else:
-        return render_template('login.html', title='Log in!',form=form, user_info=user_info)
+	form = userLogin()
+	user_info = None
+	if form.validate_on_submit():
+		user_name = form.username.data
+		user_password = form.userpassword.data
+		user_info =  get_user(user_name, user_password)
+		if user_info == None:
+			return redirect(url_for('login'))
+		elif request.method == 'POST':
+			return redirect(url_for('profile', user_vals=user_info))
+	else:
+		return render_template('login.html', title='Log in!',form=form, user_info=user_info)
 
 
 @d_app.route('/profile/<user_vals>', methods=['GET', 'POST'])
 def profile(user_vals):
 	form = profileChanges()
+	form2 = del_profile()
+	form3 = ratePlace()
 	change_fav = None
+	
 	temp = user_vals.split('+')
-	#print user_vals, temp[5]
+	userid = temp[0]	
 	answer = "Your favorite place is: " + str(temp[5])
-	if form.validate_on_submit():
+	establishments = getuser_establishment(userid)
+	if form2.validate_on_submit():
+		delete_user(userid)
+		return redirect(url_for('deleted'))			
+	if form.validate_on_submit() and form.favorite.data:
 		change_fav = form.favorite.data
 		answer = change_favplace(user_vals, change_fav)
-	return render_template('profile.html', title='Welcome to your profile!',form=form, temp=temp, answer=answer)
+	if form3.validate_on_submit() and form3.est_name.data:
+		place = form3.est_name.data
+		rating = form3.rating.data
+		user_rating(userid,place,rating)
+	return render_template('profile.html', title='Welcome to your profile!',form=form, form2=form2, form3=form3, temp=temp, answer=answer, establishments=establishments)
     
+@d_app.route('/deleted', methods=['GET', 'POST'])
+def deleted():
+	return render_template('deleted.html', title='Goodbye!')
+	
 
 @d_app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -58,7 +78,8 @@ def search():
 		user_date = form.date.data
 	print user_search, user_rating, user_type, user_date
 	print(form.errors)  #just to see if the form was having errors
-	db_returnvals= get_dbdata(user_search, user_rating, user_type, user_date)
+	#db_returnvals= get_dbdata(user_search, user_rating, user_type, user_date)
+	db_returnvals = None
 	return render_template('search.html', title='Search for an Event/Establishment',form=form, db_returnvals=db_returnvals, user_search=user_search)
 
 
@@ -76,4 +97,22 @@ def registration():
 		favoriteplace = form.reg_favoriteplace.data
 		answer = create_user(username, password,favoriteplace)	
 	return render_template('registration.html', title='Register Here!',form=form, answer=answer)
+
+@d_app.route('/change_estabs', methods=['GET', 'POST'])
+def change_estabs():
+	form = Establishments()
+	addordel = None
+	name = None
+	address = None 
+	answer = None
+	all_places = None
+	if form.validate_on_submit():
+		addordel =  form.deloradd.data
+		name = form.est_name.data
+		address = form.est_address.data
+		answer = create_establishment(addordel, name, address)
+		all_places = get_establishment()
+	return render_template('establishments.html', title='All of the Establishments!',form=form, answer=answer, all_places = all_places)
+	
+	
     

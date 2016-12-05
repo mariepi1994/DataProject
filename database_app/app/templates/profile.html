@@ -6,23 +6,42 @@
 
 <p>{{answer}}</p>
 
-<p>Your ratings: need to do....</p>
+<h2>Your ratings: </h2>
 
+{% if establishments %}
+{% for place in establishments %}
+<p>{{place}}</p>
+{% endfor %}
+{% endif %}
+
+
+<h2>Change your Favorite place:</h2>
 <form action="" method="post" name="profile">
 {{form.hidden_tag()}}
 <p>Change Favorite place:
 	{{form.favorite(size=30)}}</p>
-
 <input type="submit" value="change!">
-</form>
 
-<form action="" method="post" name="profile">
-{{form.hidden_tag()}}
-<p>DELETE your profile:
-	{{form.button(size=30)}}</p>
+<h2>Rate a place:</h2>
+<form action="" method="post" name="deletion">
+{{form3.hidden_tag()}}
+<p>Place to Rate:
+	{{form3.est_name(size=30)}}</p>
+<p>Rating:
+	{{form3.rating()}}</p>
+<input type="submit" value="Delete!">
 
-<input type="submit" value="Delete Profile!">
-</form>
+<h2>Delete Your Profile</h2>
+<form action="" method="post" name="deletion">
+{{form2.hidden_tag()}}
+<p>Delete Profile:
+	{{form2.button(size=30)}}</p>
+
+<input type="submit" value="Delete!">
+
+
+
+
 
 
 </p>

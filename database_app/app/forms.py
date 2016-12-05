@@ -26,10 +26,28 @@ class userLogin(Form):
     
 class profileChanges(Form):
 	favorite = StringField('favorite', validators=[optional()])
+
+class del_profile(Form):
 	button = RadioField('button', choices=[('Delete','Check to delete')])
 
 class register(Form):
 	reg_username = StringField('reg_username', validators=[DataRequired()])
 	reg_password = StringField('reg_password', validators=[DataRequired()])
 	reg_favoriteplace =  StringField('reg_favoriteplace', validators=[optional()]) 
+
+class Establishments(Form):
+	deloradd = SelectField('deloradd', choices=[('Delete', 'Delete'), ('Add', 'Add')], validators = [DataRequired()])
+	est_name = StringField('est_name', validators=[DataRequired()])
+	est_address = StringField('est_address', validators=[optional()])
+	food = [('American', 'American'), ('Pizza', 'Pizza'), ('SandwichesAndWraps','SandwichesAndWraps'), ('Asian','Asian'), ('Sweets','Sweets'), ('Breakfast','Breakfast')]
+	est_category = SelectField('est_category', choices = food, validators = [DataRequired()])
+
+
+class ratePlace(Form):	
+	est_name = StringField('est_name', validators=[DataRequired()])
+	rating = SelectField('rating', choices=[('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')], validators = [DataRequired()])
+	
+	
+	
+	
 

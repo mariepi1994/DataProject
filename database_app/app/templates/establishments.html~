@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>{{title}}</h3>
+
+<form action="" method="post" name="login">
+{{form.hidden_tag()}}
+<p>Do you want to delete or add:
+	{{form.deloradd()}}</p>
+
+<p> Name of Establishment:
+	{{form.est_name(size=30)}}</p>
+
+<p> Address:
+	{{form.est_address(size=30)}}</p>
+
+<p> Category:
+	{{form.est_category()}}</p>
+
+<input type="submit" value="Submit!">
+</form>
+
+{% if answer %}
+<h2>{{answer}}<h2/>
+{% endif %}
+
+{% if all_places %}
+{% for place in all_places %}
+<p>{{place}}</p>
+{% endfor %}
+{% endif %}
+
+
+</p>
+
+{% endblock %} 
