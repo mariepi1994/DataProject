@@ -50,6 +50,9 @@ def get_dbdata(search, rating, utype, date):
         tup = tuple((n,a,r))
         places.append(tup)
 
+    print ("PRINTING PLACES RIGHT BEFORE RETURN:::::::::")
+    print (places)
+    print ("##############################")
     return places
 
 

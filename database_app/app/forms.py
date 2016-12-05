@@ -15,8 +15,8 @@ from app.test import *
 
 class DBSearch(Form):
     #places2 = get_allplaces()
-    search_val = StringField('search_val', validators=[DataRequired()])
-    date = StringField('date', validators=[DataRequired()])
+    search_val = StringField('search_val', validators=[optional()])
+    date = StringField('date', validators=[optional()])
     rating = SelectField('rating', choices=[('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')], validators = [optional()])
     search_type = SelectField('search_type', choices = [('Event', 'Event'), ('Establishment', 'Establishment')], validators = [DataRequired()])
 

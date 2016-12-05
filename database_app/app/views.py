@@ -66,21 +66,19 @@ def deleted():
 
 @d_app.route('/search', methods=['GET', 'POST'])
 def search():
-	form = DBSearch()
-	user_search=""
-	user_rating = None
-	user_type = None
-	user_date = None
-	if form.validate_on_submit():
-		user_search = form.search_val.data
-		user_rating = form.rating.data
-		user_type = form.search_type.data
-		user_date = form.date.data
-	print user_search, user_rating, user_type, user_date
-	print(form.errors)  #just to see if the form was having errors
-	#db_returnvals= get_dbdata(user_search, user_rating, user_type, user_date)
-	db_returnvals = None
-	return render_template('search.html', title='Search for an Event/Establishment',form=form, db_returnvals=db_returnvals, user_search=user_search)
+    form = DBSearch()
+    user_search=""
+    user_rating = None
+    user_type = None
+    user_date = None
+    db_returnvals = None
+    if form.validate_on_submit():
+        user_search = form.search_val.data
+        user_rating = form.rating.data
+        user_type = form.search_type.data
+        user_date = form.date.data
+        db_returnvals= get_dbdata(user_search, user_rating, user_type, user_date)
+    return render_template('search.html', title='Search for an Event/Establishment',form=form, db_returnvals=db_returnvals, user_search=user_search)
 
 
 
