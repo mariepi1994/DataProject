@@ -1,42 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
+<!--=======Title======-->
 <div class="container-fluid">
-
-<h3>{{title}}</h3>
-
-<form action="" method="post" name="login">
-{{form.hidden_tag()}}
-<p>Do you want to delete or add:
-	{{form.deloradd()}}</p>
-
-<p> Name of Establishment:
-	{{form.est_name(size=30)}}</p>
-
-<p> Address:
-	{{form.est_address(size=30)}}</p>
-
-<p> Category:
-	{{form.est_category()}}</p>
-
-<input type="submit" value="Submit!">
-</form>
+	<div class="page-header">
+	  <h1>{{title}}</h1>
+	</div>
+</div>
+<!--==================-->
+<!--====== FORM ======-->
+<div class="container-fluid">
+	<form class="establishment" action="" method="post" name="login">
+		{{ form.hidden_tag() }}
+		<ul class="list-group">
+			<li class="list-group-item">Establishment Name: {{ form.est_name(size = 30) }}</li>
+			<li class="list-group-item">Establishment Address: {{form.est_address(size = 30) }}</li>
+			<li class="list-group-item">Do you want to delete or add {{ form.deloradd() }}</li>
+			<li class="list-group-item">Category: {{form.est_category()}}</li>
+			<li class="list-group-item"><input type="submit" value="Submit!"></li>
+		</ul>
+	</form>
+</div>
+<!--==================-->
+<!--====JinjaTemp=====-->
 
 {% if answer %}
-{{answer}}
+<h2>{{answer}}777889987979<h2/>
 {% endif %}
 
 {% if all_places %}
 {% for place in all_places %}
-<p></li>
-{% for x in place %}
-{{x}}
-{% endfor %}
-</li></p>
+<p>{{place}}</p>
 {% endfor %}
 {% endif %}
 
+<!--==================-->
 
 </p>
-</div>
 
 {% endblock %}

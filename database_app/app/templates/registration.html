@@ -1,29 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
+<!--=======Title======-->
 <div class="container-fluid">
-
-<h3>{{title}}</h3>
-
-<form action="" method="post" name="login">
-{{form.hidden_tag()}}
-<p>Username:
-	{{form.reg_username(size=30)}}</p>
-
-<p> Password:
-	{{form.reg_password(size=30)}}</p>
-
-<p> Favorite Place:
-	{{form.reg_favoriteplace(size=30)}}</p>
-
-<input type="submit" value="Register!">
-</form>
-
+	<div class="page-header">
+	  <h1>{{title}}</h1>
+	</div>
 </div>
+<!--==================-->
+<!--====== FORM ======-->
+<div class="container-fluid">
+{% if error %}
+	<p class=error><strong>Error:</strong> {{ error }}
+{% endif %}
+	<form class="establishment" action="" method="post" name="login">
+		{{ form.hidden_tag() }}
+		<ul class="list-group">
+			<li class="list-group-item">Username: {{ form.reg_username(size=30) }}</li>
+			<li class="list-group-item">Password: {{ form.reg_password(size=30) }}</li>
+			<li class="list-group-item">Favorite Place: {{ form.reg_favoriteplace(size=30) }}</li>
+			<li class="list-group-item"><input type="submit" value="Register!"></li>
+		</ul>
+	</form>
+</div>
+<!--==================-->
+
 {% if answer %}
 {{answer}}
 {% endif %}
 
-
-</p>
 
 {% endblock %}
