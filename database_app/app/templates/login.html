@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>{{title}}</h3>
+	<h2>{{title}}</h2>
+	{% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+	<form action="" method="post" name="login">
+	{{form.hidden_tag()}}
+	<p>Username:
+		{{form.username(size=30)}}</p>
 
-<form action="" method="post" name="login">
-{{form.hidden_tag()}}
-<p>Username:
-	{{form.username(size=30)}}</p>
+	<p> Password:
+		{{form.userpassword(size=30)}}</p>
 
-<p> Password:
-	{{form.userpassword(size=30)}}</p>
+	<input type="submit" value="Log In!">
+	</form>
 
-<input type="submit" value="Log In!">
-</form>
-
-</p>
+	</p>
 
 {% endblock %} 
