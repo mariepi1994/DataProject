@@ -256,8 +256,59 @@ def user_rating(userid,place, rating):
 		cur.execute('''INSERT INTO EstablishmentRating(UserID, EstablishmentID, Score ) VALUES (%s, %s, %s)''', (userid,EstablishmentID, rating,))
 		mysql.connection.commit()	
 		return "Your rating has been submitted!"
+
+
+
+def create_event(choice, name):
+	if(choice == 'Add'):
+		cur = mysql.connection.cursor()
+		cur.execute('''SELECT MAX(EventID) FROM Events''')
+		maxid = cur.fetchone() #this will give us a tuples
+		cur.execute('''INSERT INTO Events(EventID, Description) VALUES (%s, %s)''', (maxid[0]+1, name))
+		mysql.connection.commit()
+		cur.execute('''INSERT INTO EventRating(UserID, EventID) VALUES (%s, %s)''', (1, maxid[0]+1))
+		mysql.connection.commit()
+		return "Your Event has been created! Add more!"
+	elif(choice == 'Delete'):
+		cur = mysql.connection.cursor()
+		if name not in get_events():
+			return "This establishment does not exist"
+		else:
+			#EventID = get_eventid(name)
+			cur.execute('''DELETE FROM Events WHERE Description = (%s) ''', (str(name),))
+			mysql.connection.commit()
+			#cur.execute('''DELETE FROM EstablishmentRating WHERE EstablishmentID = (%s) ''', (EstablishmentID,))
+			#mysql.connection.commit()
+			return "Your Establishment has been Deleted!"
 		
-		
+
+def get_events():
+	cur = mysql.connection.cursor()
+	cur.execute('''SELECT Description
+					FROM Events
+					''')
+	returnvals = cur.fetchall() #use fetchall because this will return more than one roll	
+	places = []
+	for place in returnvals:
+		places.append(str(place[0]))
+
+	return places
+
+
+
+#elif(choice == 'Delete'):
+#			cur = mysql.connection.cursor()
+#			if name not in get_allplaces():
+#				return "This establishment does not exist"
+#			else:
+#				EstablishmentID = get_establishmentid(name)
+#				cur.execute('''DELETE FROM Establishments WHERE Name = (%s) ''', (str(name),))
+#				mysql.connection.commit()
+#				cur.execute('''DELETE FROM EstablishmentRating WHERE EstablishmentID = (%s) ''', (EstablishmentID,))
+#				mysql.connection.commit()
+#				return "Your Establishment has been Deleted!
+
+			
 	
 	
 	
