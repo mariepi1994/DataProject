@@ -22,52 +22,55 @@
 	<!--============Favorite=============-->
   <div id="favorite" class="tab-pane fade in active">
 		<div class="container-fluid">
-			<h2>Your Favorite Place is {{ answer }} </h2>
+			<ul class="list-group">
+			  <li class="list-group-item"><h2>Your Favorite Place is: {{ answer }} </h2></li>
+			</ul>
 		</div>
   </div>
 	<!--============Ratings=============-->
   <div id="ratings" class="tab-pane fade">
 		<div class="container-fluid">
-			<div class="container-fluid">
-				<h2>Rate a Spot</h2>
-				<form action="" method="post" name="deletion">
-					{{form3.hidden_tag()}}
-					<ul class="list-group">
-					  <li class="list-group-item">Place to Rate: {{form3.est_name(size=30)}} </li>
-						<li class="list-group-item">Rating: {{ form3.rating() }} </li>
-						{% if establishments %}
-						{% for place in establishments %}
-						<li class="list-group-item">{{place}}</li>
-						{% endfor %}
-						{% endif %}
-					</ul>
-					<input type="submit" value="Rate">
-			</div>
+			<form action="" method="post" name="deletion">
+				{{form3.hidden_tag()}}
+				<ul class="list-group">
+					<li class="list-group-item"><h2>Rate an Establishment: {{form3.est_name(size=30)}}{{ form3.rating() }}<input type="submit" value="Rate"></h2></li>
+			</form>
+					<li class="list-group-item"><h2>Past Reviews</h2></li>
+					{% if establishments %}
+					{% for place in establishments %}
+					<li class="list-group-item">
+					{% for x in place %}
+					<h4>{{ x }}</h4>
+					{% endfor %}
+					</li>
+					{% endfor %}
+					{% endif %}
+				</ul>
 		</div>
   </div>
 
 	<!--============ChangeFav=============-->
   <div id="change" class="tab-pane fade">
 		<div class="container-fluid">
-			<h2>Change your Favorite place:</h2>
-			<form action="" method="post" name="profile">
-				{{form.hidden_tag()}}
-				<p>Change Favorite place:
-					{{form.favorite(size=30)}}
-				</p>
-			<input type="submit" value="change!">
+			<ul class="list-group">
+				<form action="" method="post" name="profile">
+					{{form.hidden_tag()}}
+					<li class="list-group-item"><h2>Change Favorite: {{form.favorite(size=30)}} </h2></li>
+					<li class="list-group-item"><input type="submit" value="change!"></li>
+				</li>
+			</ul>
 		</div>
   </div>
 	<!--============Settings=============-->
 	<div id="settings" class="tab-pane fade">
 		<div class="container-fluid">
-				<h2>Delete Your Profile</h2>
+			<ul class="list-group">
 				<form action="" method="post" name="deletion">
-				{{form2.hidden_tag()}}
-				<p>Delete Profile:
-					{{form2.button(size=30)}}
-				</p>
-			<input type="submit" value="Delete!">
+					{{form2.hidden_tag()}}
+				  <li class="list-group-item"><h2>Delete Your Profile</h2></li>
+					<li class="list-group-item">{{form2.button(size=30)}}</li>
+					<li class="list-group-item"><input type="submit" value="Delete!"></li>
+			</ul>
 		</div>
 	</div>
 </div> <!--==========END Nav Content=====================-->
