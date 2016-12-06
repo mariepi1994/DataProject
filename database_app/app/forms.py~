@@ -27,6 +27,9 @@ class userLogin(Form):
 class profileChanges(Form):
 	favorite = StringField('favorite', validators=[optional()])
 
+class likeEvent(Form):
+	like = StringField('like', validators=[optional()])
+
 class del_profile(Form):
 	button = RadioField('button', choices=[('Delete','Check to delete')])
 

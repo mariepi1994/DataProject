@@ -54,5 +54,6 @@ class ratePlace(Form):
 class changingEvents(Form):
 	deloradd = SelectField('deloradd', choices=[('Delete', 'Delete'), ('Add', 'Add')], validators = [DataRequired()])
 	event_description = StringField('event_description', validators=[DataRequired()])
+	est_name = StringField('est_name', validators=[DataRequired()])
 	date = StringField('date', validators=[optional()])
 	

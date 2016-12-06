@@ -259,16 +259,27 @@ def user_rating(userid,place, rating):
 
 
 
-def create_event(choice, name):
+def create_event(choice, name, establishment):
 	if(choice == 'Add'):
+		EstablishmentID = get_establishmentid(establishment)
 		cur = mysql.connection.cursor()
 		cur.execute('''SELECT MAX(EventID) FROM Events''')
 		maxid = cur.fetchone() #this will give us a tuples
-		cur.execute('''INSERT INTO Events(EventID, Description) VALUES (%s, %s)''', (maxid[0]+1, name))
+		cur.execute('''INSERT INTO Events(EventID, Description, EstablishmentID) VALUES (%s, %s, %s)''', (maxid[0]+1, name,EstablishmentID))
 		mysql.connection.commit()
+
+		#### make sure juan is good ###########
+		#cur.execute('''SELECT *  FROM EventRating 
+		#			   WHERE EventID = %s AND UserID = %s ''', (EventID, 1))
+		#val = cur.fetchone() 
+		#if val is None:
+		#	cur.execute('''INSERT INTO EventRating(UserID, EventID) VALUES (%s, %s)''', (1, maxid[0]+1))
+		#	mysql.connection.commit()	
+		
 		cur.execute('''INSERT INTO EventRating(UserID, EventID) VALUES (%s, %s)''', (1, maxid[0]+1))
 		mysql.connection.commit()
 		return "Your Event has been created! Add more!"
+
 	elif(choice == 'Delete'):
 		cur = mysql.connection.cursor()
 		if name not in get_events():
