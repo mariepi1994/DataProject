@@ -1,6 +1,32 @@
 from app import d_app
 from app import mysql
 
+def get_recommendation(UserID):
+    
+    print ("HEY WE MADE IT TO THE FUNCTION!!!!!!!!!!!!!!!")
+    
+    cur = mysql.connection.cursor()
+    cur.execute('''SELECT Name, Address FROM Establishments WHERE Type = (SELECT Type FROM Establishments WHERE Establishments.EstablishmentID = (SELECT EstablishmentID FROM Users WHERE UserID = %s))''' , (str(UserID),))
+    returnvals = cur.fetchall()
+
+    print ("PRINTING RETURNVALS::::::::")
+    print (returnvals)
+
+    places = []
+    for place in returnvals:
+        n = str(place[0])
+        a = str(place[1])
+        tup = tuple((n,a))
+        places.append(tup)
+
+    print ("PRINTING RECOMMENDATIONS RIGHT BEFORE RETURN:::::::::")
+    print (places)
+    print ("##############################")
+    return places
+
+
+
+
 def get_dbdata(search, rating, utype, date):
     if utype == "Establishment":
         if search == "ALL":
@@ -13,6 +39,12 @@ def get_dbdata(search, rating, utype, date):
             print (returnvals)
 
         else:
+            
+            #que = mysql.connection.cursor()
+            #que.execute('''SELECT Name FROM Establishments''')
+            #if search in que.fetchall():
+            #    return ["THAT ESTABLISHMENT IS NOT IN OUR SYSTEM! TRY AGAIN!"]
+            
             cur = mysql.connection.cursor()
             #Query for a specific Establishment
             cur.execute('''SELECT Name, Address, FLOOR(AVG(Score)) FROM EstablishmentRating, Establishments WHERE EstablishmentRating.EstablishmentID = Establishments.EstablishmentID AND Establishments.Name = %s GROUP BY EstablishmentRating.EstablishmentID ''' , (str(search),))
@@ -22,6 +54,27 @@ def get_dbdata(search, rating, utype, date):
             print (returnvals)
 
     else:
+        if date == "":
+            cur = mysql.connection.cursor()
+            #Query for ALL events without specific dates
+            cur.execute('''SELECT Date, Name, Description, COUNT(UserID) FROM Events, EventRating, Establishments WHERE Events.EstablishmentID = Establishments.EstablishmentID AND Events.EventID = EventRating.EventID GROUP BY EventRating.EventID''')
+            returnvals = cur.fetchall() #use fetchall because this will return more than one row
+                
+            print ("PRINTING RETURNVALS::::::::")
+            print (returnvals)
+            
+        else:
+            cur = mysql.connection.cursor()
+            #Query for ALL events with specific dates
+            cur.execute('''SELECT Date, Name, Description, COUNT(UserID) FROM Events, EventRating, Establishments WHERE Events.EstablishmentID = Establishments.EstablishmentID AND Events.EventID = EventRating.EventID AND Date = %s GROUP BY EventRating.EventID''' , (str(date),))
+            returnvals = cur.fetchall() #use fetchall because this will return more than one row
+                
+            print ("PRINTING RETURNVALS::::::::")
+            print (returnvals)
+
+    if not returnvals:
+        return ["THERE IS NO ENTRY IN OUR SYSTEM WITH THOSE SPECIFICATIONS! TRY AGAIN!"]
+
         if search == "ALL":
             if date == "":
                 cur = mysql.connection.cursor()
@@ -54,7 +107,6 @@ def get_dbdata(search, rating, utype, date):
     print (places)
     print ("##############################")
     return places
-
 
 #validate that this is a user
 #is it is a user then we find their favorite place and return it
@@ -259,16 +311,27 @@ def user_rating(userid,place, rating):
 
 
 
-def create_event(choice, name):
+def create_event(choice, name, establishment):
 	if(choice == 'Add'):
+		EstablishmentID = get_establishmentid(establishment)
 		cur = mysql.connection.cursor()
 		cur.execute('''SELECT MAX(EventID) FROM Events''')
 		maxid = cur.fetchone() #this will give us a tuples
-		cur.execute('''INSERT INTO Events(EventID, Description) VALUES (%s, %s)''', (maxid[0]+1, name))
+		cur.execute('''INSERT INTO Events(EventID, Description, EstablishmentID) VALUES (%s, %s, %s)''', (maxid[0]+1, name,EstablishmentID))
 		mysql.connection.commit()
+
+		#### make sure juan is good ###########
+		#cur.execute('''SELECT *  FROM EventRating 
+		#			   WHERE EventID = %s AND UserID = %s ''', (EventID, 1))
+		#val = cur.fetchone() 
+		#if val is None:
+		#	cur.execute('''INSERT INTO EventRating(UserID, EventID) VALUES (%s, %s)''', (1, maxid[0]+1))
+		#	mysql.connection.commit()	
+		
 		cur.execute('''INSERT INTO EventRating(UserID, EventID) VALUES (%s, %s)''', (1, maxid[0]+1))
 		mysql.connection.commit()
 		return "Your Event has been created! Add more!"
+
 	elif(choice == 'Delete'):
 		cur = mysql.connection.cursor()
 		if name not in get_events():

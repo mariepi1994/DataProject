@@ -13,6 +13,7 @@
 		{{ form.hidden_tag() }}
 		<ul class="list-group">
 			<li class="list-group-item">Event Name: {{ form.event_description(size = 30) }}</li>
+			<li class="list-group-item">Establishment Name: {{ form.est_name(size = 30) }}</li>
 			<li class="list-group-item">Date: {{ form.date(size = 30) }}</li>
 			<li class="list-group-item">Do you want to delete or add {{ form.deloradd() }}</li>
 			<li class="list-group-item"><input type="submit" value="Submit!"></li>

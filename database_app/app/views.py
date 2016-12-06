@@ -49,12 +49,15 @@ def profile(user_vals):
 	rating = None
 	liked = None 
 	answer1 = None
+	estab = None
+	recommend = None
 	
 	temp = user_vals.split('+')
 	userid = temp[0]
 	answer = str(temp[5])
 	establishments = getuser_establishment(userid)
 	allevents = get_user_likes(userid)
+	recommend = get_recommendation(userid)
 	if form2.validate_on_submit():
 		delete_user(userid)
 		return redirect(url_for('deleted'))
@@ -69,7 +72,7 @@ def profile(user_vals):
 		liked = form4.like.data
 		answer1 = user_like(userid, liked)
 		
-	return render_template('profile.html', title='Welcome to your profile',form=form, form2=form2, form3=form3, form4=form4, temp=temp, answer=answer, answer1=answer1, establishments=establishments, allevents=allevents)
+	return render_template('profile.html', title='Welcome to your profile',form=form, form2=form2, form3=form3, form4=form4, temp=temp, answer=answer, answer1=answer1, establishments=establishments, allevents=allevents, recommend=recommend)
 
 @d_app.route('/deleted', methods=['GET', 'POST'])
 def deleted():
@@ -134,14 +137,16 @@ def change_events():
 	name = None
 	answer = None
 	date = None
+	estab = None
 	all_events = get_events()
 	if form.validate_on_submit():
 		addordel =  form.deloradd.data
 		name = form.event_description.data
 		date = form.date.data
-		answer = create_event(addordel, name) 
+		estab = form.est_name.data
+		answer = create_event(addordel, name, estab) 
 		all_events = get_events()
-		print all_events
+		
 	return render_template('events.html', title='All of the Events!',form=form, answer=answer, all_events = all_events)
 	
     
