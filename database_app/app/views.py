@@ -45,7 +45,7 @@ def profile(user_vals):
 
 	temp = user_vals.split('+')
 	userid = temp[0]
-	answer = "Your favorite place is: " + str(temp[5])
+	answer = str(temp[5])
 	establishments = getuser_establishment(userid)
 	if form2.validate_on_submit():
 		delete_user(userid)

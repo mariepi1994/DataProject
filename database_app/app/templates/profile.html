@@ -1,49 +1,87 @@
 {% extends "base.html" %}
 {% block content %}
-<!--=======Title======-->
+<!--=======Title================-->
 <div class="container-fluid">
 	<div class="page-header">
-	  <h1>{{title}} {{temp[1]}}!</h1>
+		<div class="container-fluid">
+			<h1>{{temp[1]}}'s Profile</h1>
+		</div>
 	</div>
 </div>
-<!--==================-->
+<!--=======nav tabs to show content============-->
+<div class="container-fluid">
+	<ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#favorite"><i class="fa fa-home " aria-hidden="true"></i>&nbsp; Favorite</a></li>
+			<li><a data-toggle="tab" href="#ratings"><i class="fa fa-book" aria-hidden="true"></i>&nbsp; Ratings</a></li>
+			<li><a data-toggle="tab" href="#change"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp; Change Favorite</a></li>
+			<li><a data-toggle="tab" href="#settings"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp; Settings</a></li>
+	</ul>
+</div>
+<!--==========Nav Content=====================-->
+<div class="tab-content">
+	<!--============Favorite=============-->
+  <div id="favorite" class="tab-pane fade in active">
+		<div class="container-fluid">
+			<h2>Your Favorite Place is {{ answer }} </h2>
+		</div>
+  </div>
+	<!--============Ratings=============-->
+  <div id="ratings" class="tab-pane fade">
+		<div class="container-fluid">
+			<div class="container-fluid">
+				<h2>Rate a Spot</h2>
+				<form action="" method="post" name="deletion">
+					{{form3.hidden_tag()}}
+					<ul class="list-group">
+					  <li class="list-group-item">Place to Rate: {{form3.est_name(size=30)}} </li>
+						<li class="list-group-item">Rating: {{ form3.rating() }} </li>
+						{% if establishments %}
+						{% for place in establishments %}
+						<li class="list-group-item">{{place}}</li>
+						{% endfor %}
+						{% endif %}
+					</ul>
+					<input type="submit" value="Rate">
+			</div>
+		</div>
+  </div>
 
-<h4>Hello, {{temp[1]}}!</h4>
+	<!--============ChangeFav=============-->
+  <div id="change" class="tab-pane fade">
+		<div class="container-fluid">
+			<h2>Change your Favorite place:</h2>
+			<form action="" method="post" name="profile">
+				{{form.hidden_tag()}}
+				<p>Change Favorite place:
+					{{form.favorite(size=30)}}
+				</p>
+			<input type="submit" value="change!">
+		</div>
+  </div>
+	<!--============Settings=============-->
+	<div id="settings" class="tab-pane fade">
+		<div class="container-fluid">
+				<h2>Delete Your Profile</h2>
+				<form action="" method="post" name="deletion">
+				{{form2.hidden_tag()}}
+				<p>Delete Profile:
+					{{form2.button(size=30)}}
+				</p>
+			<input type="submit" value="Delete!">
+		</div>
+	</div>
+</div> <!--==========END Nav Content=====================-->
 
-<p>{{answer}}</p>
-
-<h2>Your ratings: </h2>
-
-{% if establishments %}
-{% for place in establishments %}
-<p>{{place}}</p>
-{% endfor %}
-{% endif %}
 
 
-<h2>Change your Favorite place:</h2>
-<form action="" method="post" name="profile">
-{{form.hidden_tag()}}
-<p>Change Favorite place:
-	{{form.favorite(size=30)}}</p>
-<input type="submit" value="change!">
 
-<h2>Rate a place:</h2>
-<form action="" method="post" name="deletion">
-{{form3.hidden_tag()}}
-<p>Place to Rate:
-	{{form3.est_name(size=30)}}</p>
-<p>Rating:
-	{{form3.rating()}}</p>
-<input type="submit" value="Delete!">
 
-<h2>Delete Your Profile</h2>
-<form action="" method="post" name="deletion">
-{{form2.hidden_tag()}}
-<p>Delete Profile:
-	{{form2.button(size=30)}}</p>
 
-<input type="submit" value="Delete!">
+
+
+
+
+
 
 
 
