@@ -43,14 +43,14 @@ def profile(user_vals):
 	form2 = del_profile()
 	form3 = ratePlace()
 	change_fav = None
-	
+
 	temp = user_vals.split('+')
-	userid = temp[0]	
+	userid = temp[0]
 	answer = "Your favorite place is: " + str(temp[5])
 	establishments = getuser_establishment(userid)
 	if form2.validate_on_submit():
 		delete_user(userid)
-		return redirect(url_for('deleted'))			
+		return redirect(url_for('deleted'))
 	if form.validate_on_submit() and form.favorite.data:
 		change_fav = form.favorite.data
 		answer = change_favplace(user_vals, change_fav)
@@ -58,12 +58,12 @@ def profile(user_vals):
 		place = form3.est_name.data
 		rating = form3.rating.data
 		user_rating(userid,place,rating)
-	return render_template('profile.html', title='Welcome to your profile!',form=form, form2=form2, form3=form3, temp=temp, answer=answer, establishments=establishments)
-    
+	return render_template('profile.html', title='Welcome to your profile',form=form, form2=form2, form3=form3, temp=temp, answer=answer, establishments=establishments)
+
 @d_app.route('/deleted', methods=['GET', 'POST'])
 def deleted():
 	return render_template('deleted.html', title='Goodbye!')
-	
+
 
 @d_app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -88,13 +88,13 @@ def registration():
 	form = register()
 	username = None
 	password = None
-	favortieplace = None 
+	favortieplace = None
 	answer = None
 	if form.validate_on_submit():
 		username = form.reg_username.data
 		password = form.reg_password.data
 		favoriteplace = form.reg_favoriteplace.data
-		answer = create_user(username, password,favoriteplace)	
+		answer = create_user(username, password,favoriteplace)
 	return render_template('registration.html', title='Register Here!',form=form, answer=answer)
 
 @d_app.route('/change_estabs', methods=['GET', 'POST'])
@@ -102,6 +102,12 @@ def change_estabs():
 	form = Establishments()
 	addordel = None
 	name = None
+<<<<<<< HEAD
+=======
+	address = None
+	answer = None
+	cat = None
+>>>>>>> 4ec9aef05e172b3b09a58e0aa8d185925b9d0bfd
 	all_places = None
 	answer = None
 	if form.validate_on_submit():
@@ -110,6 +116,7 @@ def change_estabs():
 		answer = create_event(addordel, name)
 		all_places = get_establishment()
 	return render_template('establishments.html', title='All of the Establishments!',form=form, answer=answer, all_places = all_places)
+<<<<<<< HEAD
 
 	
 @d_app.route('/change_events', methods=['GET', 'POST'])
@@ -130,3 +137,5 @@ def change_events():
 	return render_template('events.html', title='All of the Events!',form=form, answer=answer, all_events = all_events)
 	
     
+=======
+>>>>>>> 4ec9aef05e172b3b09a58e0aa8d185925b9d0bfd

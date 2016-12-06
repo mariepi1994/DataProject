@@ -12,9 +12,9 @@
 	<form class="establishment" action="" method="post" name="login">
 		{{ form.hidden_tag() }}
 		<ul class="list-group">
-			<li class="list-group-item">Search: {{ form.search_type() }}</li>
-			<li class="list-group-item">Type:   {{ form.search_type() }}</li>
+			<li class="list-group-item">Search: {{ form.search_val(size=30) }}</li>
 			<li class="list-group-item">Date: {{ form.date() }}</li>
+			<li class="list-group-item">Type:   {{ form.search_type() }}</li>
 			<li class="list-group-item">Rating: {{ form.rating() }}</li>
 			<li class="list-group-item"><input type="submit" value="Submit!"></li>
 		</ul>
