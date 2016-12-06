@@ -46,3 +46,10 @@ class Establishments(Form):
 class ratePlace(Form):
 	est_name = StringField('est_name', validators=[DataRequired()])
 	rating = SelectField('rating', choices=[('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')], validators = [DataRequired()])
+
+
+class changingEvents(Form):
+	deloradd = SelectField('deloradd', choices=[('Delete', 'Delete'), ('Add', 'Add')], validators = [DataRequired()])
+	event_description = StringField('event_description', validators=[DataRequired()])
+	date = StringField('date', validators=[optional()])
+	

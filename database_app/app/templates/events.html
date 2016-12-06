@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<!--=======Title======-->
+<div class="container-fluid">
+	<div class="page-header">
+	  <h1>{{title}}</h1>
+	</div>
+</div>
+<!--==================-->
+<!--====== FORM ======-->
+<div class="container-fluid">
+	<form class="" action="" method="post" name="events">
+		{{ form.hidden_tag() }}
+		<ul class="list-group">
+			<li class="list-group-item">Establishment Name: {{ form.event_description(size = 30) }}</li>
+			<li class="list-group-item">Date: {{ form.date(size = 30) }}</li>
+			<li class="list-group-item">Do you want to delete or add {{ form.deloradd() }}</li>
+			<li class="list-group-item"><input type="submit" value="Submit!"></li>
+		</ul>
+	</form>
+</div>
+<!--==================-->
+<!--====JinjaTemp=====-->
+
+{% if answer %}
+<h2>{{answer}}<h2/>
+{% endif %}
+
+
+{% for event in all_events %}
+<p>{{ event }}<p/>
+{% endfor %}
+
+
+<!--==================-->
+
+</p>
+
+{% endblock %}

@@ -2,16 +2,58 @@ from app import d_app
 from app import mysql
 
 def get_dbdata(search, rating, utype, date):
-	if utype == "Establishment":
-		cur = mysql.connection.cursor()
-		cur.execute('''SELECT * FROM example''')
-		returnvals = cur.fetchall() #use fetchall because this will return more than one roll
+    if utype == "Establishment":
+        if search == "ALL":
+            cur = mysql.connection.cursor()
+            #Query for a ALL establishments
+            cur.execute('''SELECT Name, Address, FLOOR(AVG(Score)) FROM EstablishmentRating, Establishments WHERE EstablishmentRating.EstablishmentID = Establishments.EstablishmentID GROUP BY EstablishmentRating.EstablishmentID''')
+            returnvals = cur.fetchall() #use fetchall because this will return more than one row
+            
+            print ("PRINTING RETURNVALS::::::::")
+            print (returnvals)
+        
+        else:
+            cur = mysql.connection.cursor()
+            #Query for a specific Establishment
+            cur.execute('''SELECT Name, Address, FLOOR(AVG(Score)) FROM EstablishmentRating, Establishments WHERE EstablishmentRating.EstablishmentID = Establishments.EstablishmentID AND Establishments.Name = %s GROUP BY EstablishmentRating.EstablishmentID ''' , (str(search),))
+            returnvals = cur.fetchall() #use fetchall because this will return more than one row
+            
+            print ("PRINTING RETURNVALS::::::::")
+            print (returnvals)
 
-		'''printthis = ""
-		for i in returnvals:
-			printthis += str(i) + "<br>"'''
+    else:
+        if search == "ALL":
+            if date == "":
+                cur = mysql.connection.cursor()
+                #Query for ALL events without specific dates
+                cur.execute('''SELECT Date, Name, Description, COUNT(UserID) FROM Events, EventRating, Establishments WHERE Events.EstablishmentID = Establishments.EstablishmentID AND Events.EventID = EventRating.EventID GROUP BY EventRating.EventID''')
+                returnvals = cur.fetchall() #use fetchall because this will return more than one row
+                
+                print ("PRINTING RETURNVALS::::::::")
+                print (returnvals)
+            
+            else:
+                cur = mysql.connection.cursor()
+                #Query for ALL events with specific dates
+                cur.execute('''SELECT Date, Name, Description, COUNT(UserID) FROM Events, EventRating, Establishments WHERE Events.EstablishmentID = Establishments.EstablishmentID AND Events.EventID = EventRating.EventID AND Date = %s GROUP BY EventRating.EventID''' , (str(date),))
+                returnvals = cur.fetchall() #use fetchall because this will return more than one row
+                
+                print ("PRINTING RETURNVALS::::::::")
+                print (returnvals)
 
-		return returnvals
+    #Format returnvals
+    places = []
+    for place in returnvals:
+        n = str(place[0])
+        a = str(place[1])
+        r = str(place[2])
+        tup = tuple((n,a,r))
+        places.append(tup)
+
+    print ("PRINTING PLACES RIGHT BEFORE RETURN:::::::::")
+    print (places)
+    print ("##############################")
+    return places
 
 
 #validate that this is a user
@@ -146,10 +188,10 @@ def create_establishment(choice, name, address, category):
 		return "Your Establishment has been created! Add more!"
 	elif(choice == 'Delete'):
 		cur = mysql.connection.cursor()
-		EstablishmentID = get_establishmentid(name)
 		if name not in get_allplaces():
 			return "This establishment does not exist"
 		else:
+			EstablishmentID = get_establishmentid(name)
 			cur.execute('''DELETE FROM Establishments WHERE Name = (%s) ''', (str(name),))
 			mysql.connection.commit()
 			cur.execute('''DELETE FROM EstablishmentRating WHERE EstablishmentID = (%s) ''', (EstablishmentID,))
@@ -214,8 +256,60 @@ def user_rating(userid,place, rating):
 		cur.execute('''INSERT INTO EstablishmentRating(UserID, EstablishmentID, Score ) VALUES (%s, %s, %s)''', (userid,EstablishmentID, rating,))
 		mysql.connection.commit()	
 		return "Your rating has been submitted!"
+
+
+
+def create_event(choice, name):
+	if(choice == 'Add'):
+		cur = mysql.connection.cursor()
+		cur.execute('''SELECT MAX(EventID) FROM Events''')
+		maxid = cur.fetchone() #this will give us a tuples
+		cur.execute('''INSERT INTO Events(EventID, Description) VALUES (%s, %s)''', (maxid[0]+1, name))
+		mysql.connection.commit()
+		cur.execute('''INSERT INTO EventRating(UserID, EventID) VALUES (%s, %s)''', (1, maxid[0]+1))
+		mysql.connection.commit()
+		return "Your Event has been created! Add more!"
+	elif(choice == 'Delete'):
+		cur = mysql.connection.cursor()
+		if name not in get_events():
+			return "This establishment does not exist"
+		else:
+			#EventID = get_eventid(name)
+			cur.execute('''DELETE FROM Events WHERE Description = (%s) ''', (str(name),))
+			mysql.connection.commit()
+			#cur.execute('''DELETE FROM EstablishmentRating WHERE EstablishmentID = (%s) ''', (EstablishmentID,))
+			#mysql.connection.commit()
+			return "Your Establishment has been Deleted!"
 		
-		
+
+def get_events():
+	cur = mysql.connection.cursor()
+	cur.execute('''SELECT Description
+					FROM Events
+					''')
+	returnvals = cur.fetchall() #use fetchall because this will return more than one roll
+	
+	places = []
+	for place in returnvals:
+		places.append(str(place[0]))
+
+	return places
+
+
+
+#elif(choice == 'Delete'):
+#			cur = mysql.connection.cursor()
+#			if name not in get_allplaces():
+#				return "This establishment does not exist"
+#			else:
+#				EstablishmentID = get_establishmentid(name)
+#				cur.execute('''DELETE FROM Establishments WHERE Name = (%s) ''', (str(name),))
+#				mysql.connection.commit()
+#				cur.execute('''DELETE FROM EstablishmentRating WHERE EstablishmentID = (%s) ''', (EstablishmentID,))
+#				mysql.connection.commit()
+#				return "Your Establishment has been Deleted!
+
+			
 	
 	
 	

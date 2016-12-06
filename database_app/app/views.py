@@ -11,6 +11,7 @@ from app.forms import register
 from app.forms import Establishments
 from app.forms import del_profile
 from app.forms import ratePlace
+from app.forms import changingEvents
 from app.dbquery import *
 
 
@@ -101,15 +102,40 @@ def change_estabs():
 	form = Establishments()
 	addordel = None
 	name = None
+<<<<<<< HEAD
+=======
 	address = None
 	answer = None
 	cat = None
+>>>>>>> 4ec9aef05e172b3b09a58e0aa8d185925b9d0bfd
 	all_places = None
+	answer = None
 	if form.validate_on_submit():
 		addordel =  form.deloradd.data
 		name = form.est_name.data
-		address = form.est_address.data
-		cat = form.est_category.data
-		answer = create_establishment(addordel, name, address, cat)
+		answer = create_event(addordel, name)
 		all_places = get_establishment()
 	return render_template('establishments.html', title='All of the Establishments!',form=form, answer=answer, all_places = all_places)
+<<<<<<< HEAD
+
+	
+@d_app.route('/change_events', methods=['GET', 'POST'])
+def change_events():
+	form = changingEvents()
+	addordel = None
+	name = None
+	answer = None
+	date = None
+	all_events = get_events()
+	if form.validate_on_submit():
+		addordel =  form.deloradd.data
+		name = form.event_description.data
+		date = form.date.data
+		answer = create_event(addordel, name) 
+		all_events = get_events()
+		print all_events
+	return render_template('events.html', title='All of the Events!',form=form, answer=answer, all_events = all_events)
+	
+    
+=======
+>>>>>>> 4ec9aef05e172b3b09a58e0aa8d185925b9d0bfd
