@@ -26,7 +26,9 @@
 			<ul class="list-group">
 			  <li class="list-group-item"><h2>Your Favorite Place is: {{ answer }} </h2></li>
 			</ul>
-			{{recommend}}
+			{%for x in recommend %}
+			<p>{{x}}<p/>
+			{% endfor %}
 		</div>
   </div>
 	<!--============Liked Events=============-->
