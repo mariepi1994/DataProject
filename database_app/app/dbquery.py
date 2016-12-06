@@ -295,25 +295,50 @@ def get_events():
 	return places
 
 
+def user_like(userid, event):
+	if event not in get_events():
+		return "Not an Event!"
+	else:
+		EventID = get_eventid(event)
+		cur = mysql.connection.cursor()
+		cur.execute('''SELECT *  FROM EventRating 
+					   WHERE EventID = %s AND UserID = %s ''', (EventID, userid))
+		val = cur.fetchone() 
+		if val is None:
+			cur.execute('''INSERT INTO EventRating(EventID, UserID) VALUES (%s, %s)''', (EventID, userid))
+			mysql.connection.commit()	
+			return "You liked " + str(event) + "!!" 
+		else:
+			return "You liked " + str(event) + "!!" 
 
-#elif(choice == 'Delete'):
-#			cur = mysql.connection.cursor()
-#			if name not in get_allplaces():
-#				return "This establishment does not exist"
-#			else:
-#				EstablishmentID = get_establishmentid(name)
-#				cur.execute('''DELETE FROM Establishments WHERE Name = (%s) ''', (str(name),))
-#				mysql.connection.commit()
-#				cur.execute('''DELETE FROM EstablishmentRating WHERE EstablishmentID = (%s) ''', (EstablishmentID,))
-#				mysql.connection.commit()
-#				return "Your Establishment has been Deleted!
+	
+	
+def get_eventid(event):
+	cur = mysql.connection.cursor()
+	cur.execute("""SELECT EventID 
+					FROM Events
+					WHERE Description = %s """, (event,))
+	
+	tup = cur.fetchone()
+	return tup[0] 
 
+	
+def get_user_likes(userid):
+	cur = mysql.connection.cursor()
+	cur.execute("""SELECT Events.Description
+					FROM Users, Events, EventRating
+					WHERE Events.EventID = EventRating.EventID AND
+						  EventRating.UserID = Users.UserID AND
+						  Users.UserID = %s """, (userid,))
+	
+	tup = cur.fetchall()
+	places = []
+	for place in tup:
+		n = str(place[0])
+		places.append(n)
+
+	return places #returns string with user info AND of favorite place'''
 			
-	
-	
-	
-
-		
 	
 	
 

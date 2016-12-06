@@ -12,6 +12,7 @@ from app.forms import Establishments
 from app.forms import del_profile
 from app.forms import ratePlace
 from app.forms import changingEvents
+from app.forms import likeEvent
 from app.dbquery import *
 
 
@@ -42,12 +43,18 @@ def profile(user_vals):
 	form = profileChanges()
 	form2 = del_profile()
 	form3 = ratePlace()
+	form4 = likeEvent()
 	change_fav = None
-
+	place = None
+	rating = None
+	liked = None 
+	answer1 = None
+	
 	temp = user_vals.split('+')
 	userid = temp[0]
 	answer = "Your favorite place is: " + str(temp[5])
 	establishments = getuser_establishment(userid)
+	allevents = get_user_likes(userid)
 	if form2.validate_on_submit():
 		delete_user(userid)
 		return redirect(url_for('deleted'))
@@ -58,7 +65,11 @@ def profile(user_vals):
 		place = form3.est_name.data
 		rating = form3.rating.data
 		user_rating(userid,place,rating)
-	return render_template('profile.html', title='Welcome to your profile',form=form, form2=form2, form3=form3, temp=temp, answer=answer, establishments=establishments)
+	if form4.validate_on_submit() and form4.like.data:
+		liked = form4.like.data
+		answer1 = user_like(userid, liked)
+		
+	return render_template('profile.html', title='Welcome to your profile',form=form, form2=form2, form3=form3, form4=form4, temp=temp, answer=answer, answer1=answer1, establishments=establishments, allevents=allevents)
 
 @d_app.route('/deleted', methods=['GET', 'POST'])
 def deleted():
@@ -102,12 +113,9 @@ def change_estabs():
 	form = Establishments()
 	addordel = None
 	name = None
-<<<<<<< HEAD
-=======
 	address = None
 	answer = None
 	cat = None
->>>>>>> 4ec9aef05e172b3b09a58e0aa8d185925b9d0bfd
 	all_places = None
 	answer = None
 	if form.validate_on_submit():
@@ -116,7 +124,7 @@ def change_estabs():
 		answer = create_event(addordel, name)
 		all_places = get_establishment()
 	return render_template('establishments.html', title='All of the Establishments!',form=form, answer=answer, all_places = all_places)
-<<<<<<< HEAD
+
 
 	
 @d_app.route('/change_events', methods=['GET', 'POST'])
@@ -137,5 +145,3 @@ def change_events():
 	return render_template('events.html', title='All of the Events!',form=form, answer=answer, all_events = all_events)
 	
     
-=======
->>>>>>> 4ec9aef05e172b3b09a58e0aa8d185925b9d0bfd
