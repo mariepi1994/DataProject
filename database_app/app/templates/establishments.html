@@ -22,19 +22,26 @@
 </div>
 <!--==================-->
 <!--====JinjaTemp=====-->
+<div class="container-fluid">
+	{% if answer %}
+	<h2>{{answer}}<h2/>
+	{% endif %}
+</div>
 
-{% if answer %}
-<h2>{{answer}}777889987979<h2/>
-{% endif %}
-
-{% if all_places %}
-{% for place in all_places %}
-<p>{{place}}</p>
-{% endfor %}
-{% endif %}
+<div class="container-fluid">
+	<ul class="list-group">
+	{% if all_places %}
+		{% for place in all_places %}
+		<li class="list-group-item">
+			{% for x in place %}
+			<p>{{x}}</p>
+			{% endfor%}
+		</li>
+		{% endfor %}
+	{% endif %}
+	</ul>
+</div>
 
 <!--==================-->
-
-</p>
 
 {% endblock %}
