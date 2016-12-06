@@ -50,12 +50,14 @@ def profile(user_vals):
 	liked = None 
 	answer1 = None
 	estab = None
+	recommend = None
 	
 	temp = user_vals.split('+')
 	userid = temp[0]
 	answer = str(temp[5])
 	establishments = getuser_establishment(userid)
 	allevents = get_user_likes(userid)
+	recommend = get_recommendation(userid)
 	if form2.validate_on_submit():
 		delete_user(userid)
 		return redirect(url_for('deleted'))
@@ -70,7 +72,7 @@ def profile(user_vals):
 		liked = form4.like.data
 		answer1 = user_like(userid, liked)
 		
-	return render_template('profile.html', title='Welcome to your profile',form=form, form2=form2, form3=form3, form4=form4, temp=temp, answer=answer, answer1=answer1, establishments=establishments, allevents=allevents)
+	return render_template('profile.html', title='Welcome to your profile',form=form, form2=form2, form3=form3, form4=form4, temp=temp, answer=answer, answer1=answer1, establishments=establishments, allevents=allevents, recommend=recommend)
 
 @d_app.route('/deleted', methods=['GET', 'POST'])
 def deleted():

@@ -8,16 +8,16 @@ def get_dbdata(search, rating, utype, date):
             #Query for a ALL establishments
             cur.execute('''SELECT Name, Address, FLOOR(AVG(Score)) FROM EstablishmentRating, Establishments WHERE EstablishmentRating.EstablishmentID = Establishments.EstablishmentID GROUP BY EstablishmentRating.EstablishmentID''')
             returnvals = cur.fetchall() #use fetchall because this will return more than one row
-            
+
             print ("PRINTING RETURNVALS::::::::")
             print (returnvals)
-        
+
         else:
             cur = mysql.connection.cursor()
             #Query for a specific Establishment
             cur.execute('''SELECT Name, Address, FLOOR(AVG(Score)) FROM EstablishmentRating, Establishments WHERE EstablishmentRating.EstablishmentID = Establishments.EstablishmentID AND Establishments.Name = %s GROUP BY EstablishmentRating.EstablishmentID ''' , (str(search),))
             returnvals = cur.fetchall() #use fetchall because this will return more than one row
-            
+
             print ("PRINTING RETURNVALS::::::::")
             print (returnvals)
 
@@ -28,16 +28,16 @@ def get_dbdata(search, rating, utype, date):
                 #Query for ALL events without specific dates
                 cur.execute('''SELECT Date, Name, Description, COUNT(UserID) FROM Events, EventRating, Establishments WHERE Events.EstablishmentID = Establishments.EstablishmentID AND Events.EventID = EventRating.EventID GROUP BY EventRating.EventID''')
                 returnvals = cur.fetchall() #use fetchall because this will return more than one row
-                
+
                 print ("PRINTING RETURNVALS::::::::")
                 print (returnvals)
-            
+
             else:
                 cur = mysql.connection.cursor()
                 #Query for ALL events with specific dates
                 cur.execute('''SELECT Date, Name, Description, COUNT(UserID) FROM Events, EventRating, Establishments WHERE Events.EstablishmentID = Establishments.EstablishmentID AND Events.EventID = EventRating.EventID AND Date = %s GROUP BY EventRating.EventID''' , (str(date),))
                 returnvals = cur.fetchall() #use fetchall because this will return more than one row
-                
+
                 print ("PRINTING RETURNVALS::::::::")
                 print (returnvals)
 
@@ -57,28 +57,28 @@ def get_dbdata(search, rating, utype, date):
 
 
 #validate that this is a user
-#is it is a user then we find their favorite place and return it 
+#is it is a user then we find their favorite place and return it
 def get_user(username, userpassword):
 	cur = mysql.connection.cursor()
 	cur.execute("""SELECT * FROM Users WHERE UserName = %s and Password = %s""" , (str(username),str(userpassword),))
 	returnvals = cur.fetchall() #use fetchall because this will return more than one roll
-	
+
 
 	if len(returnvals)==0:
 		returnvals = None
 	else:
 		returnvals = get_favoriteplace(returnvals[0][0])
-	return returnvals  #return a STRING of their info that includes their favorite place 
+	return returnvals  #return a STRING of their info that includes their favorite place
 
 
 def change_favplace(user_vals, changeto):
 	userlist = user_vals.split('+') #gets the userid which it the first tuple
 	userID = userlist[0]
 	place = get_favoriteplace(userID).split('+')
-	
+
 	#check if the place that they want is in db
 	if changeto not in get_allplaces():
-		return " NOT IN THE DATABASW! TRY AGAIN.\n  Your favorite place is: " + str(place[5])
+		return " NOT IN THE DATABASE! TRY AGAIN.\n  Favorite: " + str(place[5])
 	else: #e
 		cur = mysql.connection.cursor()
 		cur.execute("""SELECT EstablishmentID
@@ -90,21 +90,21 @@ def change_favplace(user_vals, changeto):
 		#print EstablishmentID
 		'''EstablishmentID = get_establishmentid(changeto)
 		print "ESTABLISH  " + str(EstablishmentID)'''
-		
+
 
 
 		#change the favorite place
 		cur = mysql.connection.cursor()
 		cur.execute("""UPDATE Users
-						SET EstablishmentID = %s 
+						SET EstablishmentID = %s
 						WHERE UserID = %s """, (EstablishmentID, userID,))
-		mysql.connection.commit()	
+		mysql.connection.commit()
 
 		place = get_favoriteplace(userID).split('+')
 		return "Your favorite place is: " + str(changeto)
-	
 
-#returns all of the places in a list 		
+
+#returns all of the places in a list
 def get_allplaces():
 	cur = mysql.connection.cursor()
 	cur.execute('''SELECT Name FROM Establishments''')
@@ -117,31 +117,31 @@ def get_allplaces():
 	return places
 
 #converts that weird tuple that the db return in a string "username+password+etc"
-def convert_tup(tup):	
-	return "+".join(map(str,list(tup[0])))	
+def convert_tup(tup):
+	return "+".join(map(str,list(tup[0])))
 
 #given the name of the place find it's establishmentID
 def get_establishmentid(Name):
 	cur = mysql.connection.cursor()
-	cur.execute("""SELECT EstablishmentID 
+	cur.execute("""SELECT EstablishmentID
 					FROM Establishments
 					WHERE Name = %s """, (Name,))
-	
+
 	tup = cur.fetchone()
-	return tup[0] 
-	
-	
+	return tup[0]
+
+
 
 #get a users favorite place
 def get_favoriteplace(userID):
 	cur = mysql.connection.cursor()
-	cur.execute("""SELECT * 
+	cur.execute("""SELECT *
 					FROM Users, Establishments
 					WHERE Establishments.EstablishmentID = Users.EstablishmentID AND
 					Users.UserID = %s """, (userID,))
-	
+
 	tup = cur.fetchall()
-	returnvals = convert_tup(tup)	
+	returnvals = convert_tup(tup)
 	return returnvals #returns string with user info AND of favorite place
 
 
@@ -154,17 +154,17 @@ def create_user(username, password,favoriteplace):
 	cur.execute('''INSERT INTO Users(UserID, UserName, Password, EstablishmentID ) VALUES (%s, %s, %s, %s )''', (maxid[0]+1, username, password, EstablishmentID))
 	mysql.connection.commit()
 	return "Your Profile has been created! GO to login to see your profile."
-	
-	
+
+
 #Gets the establishments that the user has rated
 def getuser_establishment(userID):
 	cur = mysql.connection.cursor()
-	cur.execute("""SELECT Establishments.Name, EstablishmentRating.Score 
+	cur.execute("""SELECT Establishments.Name, EstablishmentRating.Score
 					FROM Users, Establishments, EstablishmentRating
 					WHERE Establishments.EstablishmentID = EstablishmentRating.EstablishmentID AND
 						  EstablishmentRating.UserID = Users.UserID AND
 						  Users.UserID = %s """, (userID,))
-	
+
 	tup = cur.fetchall()
 	places = []
 	for place in tup:
@@ -197,7 +197,7 @@ def create_establishment(choice, name, address, category):
 			cur.execute('''DELETE FROM EstablishmentRating WHERE EstablishmentID = (%s) ''', (EstablishmentID,))
 			mysql.connection.commit()
 			return "Your Establishment has been Deleted!"
-			
+
 
 def delete_user(userid):
 	print "user id is: " + str(userid)
@@ -205,7 +205,7 @@ def delete_user(userid):
 	cur.execute('''DELETE FROM Users WHERE UserID = (%s) ''', (userid,))
 	mysql.connection.commit()
 	#return "Your User has been Deleted!"
-	
+
 
 
 #gets the establishments and their rating BUT only those that have ratings
@@ -216,7 +216,7 @@ def get_est_rating():
 					WHERE Establishments.EstablishmentID = EstablishmentRating.EstablishmentID
 					GROUP BY stablishments.Name''')
 	returnvals = cur.fetchall() #use fetchall because this will return more than one roll
-	
+
 	places = []
 	for place in returnvals:
 		n = str(place[0])
@@ -234,7 +234,7 @@ def get_establishment():
 					FROM Establishments
 					''')
 	returnvals = cur.fetchall() #use fetchall because this will return more than one roll
-	
+
 	places = []
 	for place in returnvals:
 		n = str(place[0])
@@ -243,9 +243,9 @@ def get_establishment():
 		places.append(tup)
 
 	return places
-	
 
-#lets the user rate the palce 
+
+#lets the user rate the palce
 def user_rating(userid,place, rating):
 	if place not in get_allplaces():
 		return "Not a place!"
@@ -254,7 +254,7 @@ def user_rating(userid,place, rating):
 		print "ESTABLISH  " + str(EstablishmentID)
 		cur = mysql.connection.cursor()
 		cur.execute('''INSERT INTO EstablishmentRating(UserID, EstablishmentID, Score ) VALUES (%s, %s, %s)''', (userid,EstablishmentID, rating,))
-		mysql.connection.commit()	
+		mysql.connection.commit()
 		return "Your rating has been submitted!"
 
 
@@ -276,7 +276,7 @@ def create_event(choice, name, establishment):
 		#	cur.execute('''INSERT INTO EventRating(UserID, EventID) VALUES (%s, %s)''', (1, maxid[0]+1))
 		#	mysql.connection.commit()	
 		
-		cur.execute('''INSERT INTO EventRating(UserID, EventID) VALUES (%s, %s)''', (1, 100))
+		cur.execute('''INSERT INTO EventRating(UserID, EventID) VALUES (%s, %s)''', (1, maxid[0]+1))
 		mysql.connection.commit()
 		return "Your Event has been created! Add more!"
 
@@ -291,14 +291,14 @@ def create_event(choice, name, establishment):
 			#cur.execute('''DELETE FROM EstablishmentRating WHERE EstablishmentID = (%s) ''', (EstablishmentID,))
 			#mysql.connection.commit()
 			return "Your Establishment has been Deleted!"
-		
+
 
 def get_events():
 	cur = mysql.connection.cursor()
 	cur.execute('''SELECT Description
 					FROM Events
 					''')
-	returnvals = cur.fetchall() #use fetchall because this will return more than one roll	
+	returnvals = cur.fetchall() #use fetchall because this will return more than one roll
 	places = []
 	for place in returnvals:
 		places.append(str(place[0]))
@@ -312,28 +312,28 @@ def user_like(userid, event):
 	else:
 		EventID = get_eventid(event)
 		cur = mysql.connection.cursor()
-		cur.execute('''SELECT *  FROM EventRating 
+		cur.execute('''SELECT *  FROM EventRating
 					   WHERE EventID = %s AND UserID = %s ''', (EventID, userid))
-		val = cur.fetchone() 
+		val = cur.fetchone()
 		if val is None:
 			cur.execute('''INSERT INTO EventRating(EventID, UserID) VALUES (%s, %s)''', (EventID, userid))
-			mysql.connection.commit()	
-			return "You liked " + str(event) + "!!" 
+			mysql.connection.commit()
+			return "You liked " + str(event) + "!!"
 		else:
-			return "You liked " + str(event) + "!!" 
+			return "You liked " + str(event) + "!!"
 
-	
-	
+
+
 def get_eventid(event):
 	cur = mysql.connection.cursor()
-	cur.execute("""SELECT EventID 
+	cur.execute("""SELECT EventID
 					FROM Events
 					WHERE Description = %s """, (event,))
-	
-	tup = cur.fetchone()
-	return tup[0] 
 
-	
+	tup = cur.fetchone()
+	return tup[0]
+
+
 def get_user_likes(userid):
 	cur = mysql.connection.cursor()
 	cur.execute("""SELECT Events.Description
@@ -341,7 +341,7 @@ def get_user_likes(userid):
 					WHERE Events.EventID = EventRating.EventID AND
 						  EventRating.UserID = Users.UserID AND
 						  Users.UserID = %s """, (userid,))
-	
+
 	tup = cur.fetchall()
 	places = []
 	for place in tup:
@@ -349,9 +349,3 @@ def get_user_likes(userid):
 		places.append(n)
 
 	return places #returns string with user info AND of favorite place'''
-			
-	
-	
-
-
-
