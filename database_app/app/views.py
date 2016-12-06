@@ -57,7 +57,7 @@ def profile(user_vals):
 	answer = str(temp[5])
 	establishments = getuser_establishment(userid)
 	allevents = get_user_likes(userid)
-	recommend = get_recommendation(userid)
+	#recommend = get_recommendation(userid)
 	if form2.validate_on_submit():
 		delete_user(userid)
 		return redirect(url_for('deleted'))
@@ -71,6 +71,8 @@ def profile(user_vals):
 	if form4.validate_on_submit() and form4.like.data:
 		liked = form4.like.data
 		answer1 = user_like(userid, liked)
+
+	recommend = get_recommendation(userid)
 		
 	return render_template('profile.html', title='Welcome to your profile',form=form, form2=form2, form3=form3, form4=form4, temp=temp, answer=answer, answer1=answer1, establishments=establishments, allevents=allevents, recommend=recommend)
 
@@ -124,7 +126,9 @@ def change_estabs():
 	if form.validate_on_submit():
 		addordel =  form.deloradd.data
 		name = form.est_name.data
-		answer = create_event(addordel, name)
+		address = form.est_address.data
+		cat = form.est_category.data
+		answer = create_establishment(addordel, name, address, cat)
 		all_places = get_establishment()
 	return render_template('establishments.html', title='All of the Establishments!',form=form, answer=answer, all_places = all_places)
 

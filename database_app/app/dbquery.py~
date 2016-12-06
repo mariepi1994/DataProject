@@ -1,6 +1,32 @@
 from app import d_app
 from app import mysql
 
+def get_recommendation(UserID):
+    
+    print ("HEY WE MADE IT TO THE FUNCTION!!!!!!!!!!!!!!!")
+    
+    cur = mysql.connection.cursor()
+    cur.execute('''SELECT Name, Address FROM Establishments WHERE Type = (SELECT Type FROM Establishments WHERE Establishments.EstablishmentID = (SELECT EstablishmentID FROM Users WHERE UserID = %s))''' , (str(UserID),))
+    returnvals = cur.fetchall()
+
+    print ("PRINTING RETURNVALS::::::::")
+    print (returnvals)
+
+    places = []
+    for place in returnvals:
+        n = str(place[0])
+        a = str(place[1])
+        tup = tuple((n,a))
+        places.append(tup)
+
+    print ("PRINTING RECOMMENDATIONS RIGHT BEFORE RETURN:::::::::")
+    print (places)
+    print ("##############################")
+    return places
+
+
+
+
 def get_dbdata(search, rating, utype, date):
     if utype == "Establishment":
         if search == "ALL":
@@ -13,6 +39,12 @@ def get_dbdata(search, rating, utype, date):
             print (returnvals)
 
         else:
+            
+            #que = mysql.connection.cursor()
+            #que.execute('''SELECT Name FROM Establishments''')
+            #if search in que.fetchall():
+            #    return ["THAT ESTABLISHMENT IS NOT IN OUR SYSTEM! TRY AGAIN!"]
+            
             cur = mysql.connection.cursor()
             #Query for a specific Establishment
             cur.execute('''SELECT Name, Address, FLOOR(AVG(Score)) FROM EstablishmentRating, Establishments WHERE EstablishmentRating.EstablishmentID = Establishments.EstablishmentID AND Establishments.Name = %s GROUP BY EstablishmentRating.EstablishmentID ''' , (str(search),))
@@ -21,7 +53,45 @@ def get_dbdata(search, rating, utype, date):
             print ("PRINTING RETURNVALS::::::::")
             print (returnvals)
 
+        places = []
+        for place in returnvals:
+            n = str(place[0])
+            a = str(place[1])
+            r = str(place[2])
+            tup = tuple((n,a,r))
+            places.append(tup)
+
+
     else:
+        if date == "":
+            cur = mysql.connection.cursor()
+            #Query for ALL events without specific dates
+            cur.execute('''SELECT Date, Name, Description, COUNT(UserID) FROM Events, EventRating, Establishments WHERE Events.EstablishmentID = Establishments.EstablishmentID AND Events.EventID = EventRating.EventID GROUP BY EventRating.EventID''')
+            returnvals = cur.fetchall() #use fetchall because this will return more than one row
+                
+            print ("PRINTING RETURNVALS::::::::")
+            print (returnvals)
+            
+        else:
+            cur = mysql.connection.cursor()
+            #Query for ALL events with specific dates
+            cur.execute('''SELECT Date, Name, Description, COUNT(UserID) FROM Events, EventRating, Establishments WHERE Events.EstablishmentID = Establishments.EstablishmentID AND Events.EventID = EventRating.EventID AND Date = %s GROUP BY EventRating.EventID''' , (str(date),))
+            returnvals = cur.fetchall() #use fetchall because this will return more than one row
+                
+            print ("PRINTING RETURNVALS::::::::")
+            print (returnvals)
+        
+        places = []
+        for place in returnvals:
+            n = str(place[0])
+            a = str(place[1])
+            r = str(place[2])
+            tup = tuple((n,a,r))
+            places.append(tup)
+
+    if not returnvals:
+        return ["THERE IS NO ENTRY IN OUR SYSTEM WITH THOSE SPECIFICATIONS! TRY AGAIN!"]
+        """
         if search == "ALL":
             if date == "":
                 cur = mysql.connection.cursor()
@@ -31,6 +101,14 @@ def get_dbdata(search, rating, utype, date):
 
                 print ("PRINTING RETURNVALS::::::::")
                 print (returnvals)
+            places = []
+            for place in returnvals:
+                n = str(place[0])
+                a = str(place[1])
+                r = str(place[2])
+                p = str(place[3])
+                tup = tuple((n,a,r,p))
+                places.append(tup)
 
             else:
                 cur = mysql.connection.cursor()
@@ -40,7 +118,18 @@ def get_dbdata(search, rating, utype, date):
 
                 print ("PRINTING RETURNVALS::::::::")
                 print (returnvals)
+            places = []
+            for place in returnvals:
+                n = str(place[0])
+                a = str(place[1])
+                r = str(place[2])
+                p = str(place[3])
+                tup = tuple((n,a,r,p))
+                places.append(tup)
 
+    if not returnvals:
+        return ["THERE IS NO ENTRY IN OUR SYSTEM WITH THOSE SPECIFICATIONS! TRY AGAIN!"]
+        
     #Format returnvals
     places = []
     for place in returnvals:
@@ -53,8 +142,8 @@ def get_dbdata(search, rating, utype, date):
     print ("PRINTING PLACES RIGHT BEFORE RETURN:::::::::")
     print (places)
     print ("##############################")
+            """
     return places
-
 
 #validate that this is a user
 #is it is a user then we find their favorite place and return it
