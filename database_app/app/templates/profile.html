@@ -82,7 +82,44 @@
 
 
 
+<<<<<<< HEAD
+<h2>Your Liked Events: </h2>
 
+{% if allevents %}
+{% for event in allevents %}
+<p>{{event}}</p>
+{% endfor %}
+{% endif %}
+
+
+<h2>Change your Favorite place:</h2>
+<form action="" method="post" name="profile">
+{{form.hidden_tag()}}
+<p>Change Favorite place:
+	{{form.favorite(size=30)}}</p>
+<input type="submit" value="change!">
+
+<h2>Rate a place:</h2>
+<form action="" method="post" name="rating">
+{{form3.hidden_tag()}}
+<p>Place to Rate:
+	{{form3.est_name(size=30)}}</p>
+<p>Rating:
+	{{form3.rating()}}</p>
+<input type="submit" value="Rate!">
+
+<h2>Like an event:</h2>
+<form action="" method="post" name="rating">
+{{form4.hidden_tag()}}
+<p>Place to Rate:
+	{{form4.like(size=30)}}</p>
+<input type="submit" value="Like!">
+{% if answer1 %}
+{{answer1}}
+{% endif %}
+=======
+
+>>>>>>> 77b80cb93ca32d48f2dcbff3b8da60bc01bd9918
 
 
 
