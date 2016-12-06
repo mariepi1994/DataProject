@@ -53,6 +53,15 @@ def get_dbdata(search, rating, utype, date):
             print ("PRINTING RETURNVALS::::::::")
             print (returnvals)
 
+        places = []
+        for place in returnvals:
+            n = str(place[0])
+            a = str(place[1])
+            r = str(place[2])
+            tup = tuple((n,a,r))
+            places.append(tup)
+
+
     else:
         if date == "":
             cur = mysql.connection.cursor()
@@ -71,10 +80,19 @@ def get_dbdata(search, rating, utype, date):
                 
             print ("PRINTING RETURNVALS::::::::")
             print (returnvals)
+        
+        places = []
+        for place in returnvals:
+            n = str(place[0])
+            a = str(place[1])
+            r = str(place[2])
+	    p = str(place[3])
+            tup = tuple((n,a,r,p))
+            places.append(tup)
 
     if not returnvals:
         return ["THERE IS NO ENTRY IN OUR SYSTEM WITH THOSE SPECIFICATIONS! TRY AGAIN!"]
-
+        """
         if search == "ALL":
             if date == "":
                 cur = mysql.connection.cursor()
@@ -84,6 +102,14 @@ def get_dbdata(search, rating, utype, date):
 
                 print ("PRINTING RETURNVALS::::::::")
                 print (returnvals)
+            places = []
+            for place in returnvals:
+                n = str(place[0])
+                a = str(place[1])
+                r = str(place[2])
+                p = str(place[3])
+                tup = tuple((n,a,r,p))
+                places.append(tup)
 
             else:
                 cur = mysql.connection.cursor()
@@ -93,7 +119,18 @@ def get_dbdata(search, rating, utype, date):
 
                 print ("PRINTING RETURNVALS::::::::")
                 print (returnvals)
+            places = []
+            for place in returnvals:
+                n = str(place[0])
+                a = str(place[1])
+                r = str(place[2])
+                p = str(place[3])
+                tup = tuple((n,a,r,p))
+                places.append(tup)
 
+    if not returnvals:
+        return ["THERE IS NO ENTRY IN OUR SYSTEM WITH THOSE SPECIFICATIONS! TRY AGAIN!"]
+        
     #Format returnvals
     places = []
     for place in returnvals:
@@ -106,6 +143,7 @@ def get_dbdata(search, rating, utype, date):
     print ("PRINTING PLACES RIGHT BEFORE RETURN:::::::::")
     print (places)
     print ("##############################")
+            """
     return places
 
 #validate that this is a user

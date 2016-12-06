@@ -15,16 +15,18 @@
 			<li class="list-group-item">Search: {{ form.search_val(size=30) }}</li>
 			<li class="list-group-item">Date: {{ form.date() }}</li>
 			<li class="list-group-item">Type:   {{ form.search_type() }}</li>
-			<li class="list-group-item">Rating: {{ form.rating() }}</li>
 			<li class="list-group-item"><input type="submit" value="Submit!"></li>
 		</ul>
 	</form>
 </div>
 <!--==================-->
+
 {{user_search}}
 
 {% if db_returnvals %} <br/>
-{{db_returnvals}}
+{% for x in db_returnvals %}
+<p>{{x}}<p/>
+{% endfor %}
 {% endif %}
 
 </p>
